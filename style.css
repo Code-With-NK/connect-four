@@ -1,7 +1,7 @@
 *, *::after, *::before {
     margin: 0;
     padding: 0;
-    font-family: 'Courier New', Courier, monospace;
+    font-family: Georgia, 'Times New Roman', Times, serif
 }
 
 html {
@@ -16,19 +16,27 @@ body {
     display: flex;
     flex-direction: column;
     align-items: center;
+    margin: 20px auto;
 }
 
-h1 {
-    font-size: 5vh;
+heading2 {
+    font-size: 6vh;
     margin: 2.5vh;
     color: white;
 }
 
+.holder {
+    padding-top: 30vmin;
+    margin: 20px auto;
+}
+
 #board {
-    padding-top: 10vmin;
-    width: 70vmin;
-    height: 60vmin;
+    width: 80vmin;
+    height: 70vmin;
     display: grid;
+    border-radius: 2vh;
+    border: 4vmin solid rgb(28, 84, 200);
+    background-color: rgb(26, 41, 57);
     grid-template-columns: repeat(7, 1fr);
     grid-template-rows: repeat(6, 1fr);
 }
@@ -43,7 +51,7 @@ h1 {
     content: '';
     width: 100%;
     height: 100%;
-    background-image: radial-gradient(transparent 60%, rgb(0, 0, 162) 60%);
+    background-image: radial-gradient(transparent 60%, rgb(28, 84, 200) 60%);
     z-index: 1;
 }
 
@@ -54,15 +62,16 @@ h1 {
 }
 
 .piece[data-player="1"] {
-    background-color: yellow;
+    background-color: rgb(194, 162, 21);
 }
 
 .piece[data-player="2"] {
-    background-color: red;
+    background-color: rgb(180, 37, 10);
 }
 
 .piece[data-placed="false"] {
-    transform: translateY(-10vmin);
+    transform: translateY(-15vmin);
+    border: 2px solid white;
 }
 
 #modal-container {
@@ -74,20 +83,21 @@ h1 {
     height: 100%;
     z-index: 1;
     background-color: rgba(0, 0, 0, 0.5);
-    padding-top: 15vh;
+    padding-top: 0vh;
 }
 
 #modal-content {
+    border-radius: 1vh;
     position: relative;
     width: 80vw;
     margin: auto;
     padding: 2.5vmin;
-    background-color: rgb(222, 222, 222);
+    background-color: rgb(194, 162, 16);
     align-items: center;
     display: flex;
     flex-direction: column;
     animation-name: animatetop;
-    animation-duration: 0.3s
+    animation-duration: 0.3s;
 }
 
 @keyframes animatetop {
@@ -95,24 +105,53 @@ h1 {
     to {top: 0; opacity: 1}
 }
 
+#modal-heading {
+    font-size: 6vh;
+    margin: 2.5vh;
+    color: white;
+    font-weight: bolder;
+}
+
 #modal-message {
-    font-size: 5vmin;
-    margin: 2.5vmin;
+    font-size: 5.5vmin;
+    margin: 2vmin;
 }
 
 #reset {
-    color: darkblue;
+    color: white;
     font-size: 3vh;
     margin: 2.5vmin;
     padding: 2.5vmin;
-    background-color: rgba(88, 222, 163, 0.5);
+    outline: none;
+    border-radius: 1vh;
+    background-color: rgba(20, 23, 163);
     font-weight: bold;
 }
 
 .piece[data-player="1"][data-highlighted="true"] {
-  background-color: rgb(255, 0, 0);
+  background-color: rgb(100, 187, 21);
 }
 
 .piece[data-player="2"][data-highlighted="true"] {
-  background-color: rgb(179, 255, 0);
+  background-color: rgb(100, 187, 21);
+}
+
+
+h2, h4 {
+    color: white;
+    margin-top: 2vh;
+}
+
+h4 {
+    color: white;
+    font-size: 3.5vmin;
+}
+
+.link {
+    color: royalblue;
+    text-decoration: underline;
+}
+
+#creator {
+    margin-top: 16vh;
 }

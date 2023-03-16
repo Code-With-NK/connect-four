@@ -1,11 +1,22 @@
 const board = document.querySelector('#board')
 const modalContainer = document.querySelector('#modal-container')
+const modalHeading = document.querySelector('#modal-heading')
 const modalMessage = document.querySelector('#modal-message')
-const resetButton = document.querySelector('#reset')
+const modalButton = document.querySelector('#reset')
+const linkText = document.querySelector('.link')
+const ytLink = document.getElementById('yt')
 
-resetButton.onclick = () => {
+modalButton.onclick = () => {
     location.reload()
 }
+
+linkText.onclick = () => {
+    location.assign(linkText.dataset.link)
+}
+
+ytLink.addEventListener('click', () => {
+    window.open(ytLink.dataset.link)
+})
 
 const RED_TURN = 1
 const YELLOW_TURN = 2
@@ -29,7 +40,7 @@ for (let i = 0; i < 42; i++) {
     board.appendChild(cell)
     
     cell.ontouchstart = () => {
-        onMouseEnteredColumn(i % 7)
+        onFingerEnteredColumn(i % 7)
     }
     
     cell.onclick = () => {
@@ -61,7 +72,7 @@ function onColumnClicked(column){
     let yDiff = unplacedY - placedY
     
     animating = true
-    removeUnplacePiece()
+    removeUnplacedPiece()
     let animate = piece.animate(
         [
             { transform: `translateY(${yDiff}px)`, offset: 0},
@@ -70,7 +81,7 @@ function onColumnClicked(column){
             { transform: `translateY(0px)`, offset: 1},
         ],
         {
-            duration: 400,
+            duration: 600,
             easing: "linear",
             iterations: 1
         }
@@ -83,13 +94,17 @@ function checkWinGameOrDraw(){
     animating = false
     
     if(!pieces.includes(0)){
-        modalContainer.style.display = 'block'
-        modalMessage.textContent = 'Draw'
+        modalContainer.style.display = 'flex'
+        modalHeading.textContent = 'Game Draw'
+        modalMessage.textContent = 'Game Has been Drawn. Play Again'
+        modalButton.textContent = 'Play Again'
     }
     
-    if(playerHasWon(playerTurn, pieces)){
-        modalContainer.style.display = 'block'
-        modalMessage.textContent = `Player ${playerTurn} has won`
+    if(hasPlayerWon(playerTurn, pieces)){
+        modalContainer.style.display = 'flex'
+        modalHeading.textContent = playerTurn == RED_TURN ? 'Game Lost' : 'Game Won'
+        modalMessage.textContent = `${playerTurn == YELLOW_TURN ? 'Red' : 'Yellow'} player has won`
+        modalButton.textContent = 'Play Again'
     }
     
     if (playerTurn === RED_TURN) {
@@ -101,7 +116,7 @@ function checkWinGameOrDraw(){
     updateHover()
 }
 
-function playerHasWon(playerTurn, pieces){
+function hasPlayerWon(playerTurn, pieces){
     for (let index = 0; index < 42; index++) {
         if(index % 7 < 4){
             if(
@@ -168,7 +183,7 @@ function playerHasWon(playerTurn, pieces){
 }
 
 function updateHover(){
-    removeUnplacePiece()
+    removeUnplacedPiece()
     
     if(pieces[hoverColumn] === 0){
         let cell = board.children[hoverColumn]
@@ -180,14 +195,14 @@ function updateHover(){
     }
 }
 
-function removeUnplacePiece(){
-    let unplaceedPiece = document.querySelector("[data-placed='false']")
-    if (unplaceedPiece) {
-        unplaceedPiece.parentElement.removeChild(unplaceedPiece)
+function removeUnplacedPiece(){
+    let unplacedPiece = document.querySelector("[data-placed='false']")
+    if (unplacedPiece) {
+        unplacedPiece.parentElement.removeChild(unplacedPiece)
     }
 }
 
-function onMouseEnteredColumn(column){
+function onFingerEnteredColumn(column){
     hoverColumn = column
     if(!animating){
         updateHover()
