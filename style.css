@@ -1,0 +1,157 @@
+*, *::after, *::before {
+    margin: 0;
+    padding: 0;
+    font-family: Georgia, 'Times New Roman', Times, serif
+}
+
+html {
+    background-color: black;
+    background-size: cover;
+    background-repeat: no-repeat;
+    width: 100%;
+    height: 100%;
+}
+
+body {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin: 20px auto;
+}
+
+heading2 {
+    font-size: 6vh;
+    margin: 2.5vh;
+    color: white;
+}
+
+.holder {
+    padding-top: 30vmin;
+    margin: 20px auto;
+}
+
+#board {
+    width: 80vmin;
+    height: 70vmin;
+    display: grid;
+    border-radius: 2vh;
+    border: 4vmin solid rgb(28, 84, 200);
+    background-color: rgb(26, 41, 57);
+    grid-template-columns: repeat(7, 1fr);
+    grid-template-rows: repeat(6, 1fr);
+}
+
+.cell {
+    position: relative;
+    display: flex;
+}
+
+.cell::before {
+    position: absolute;
+    content: '';
+    width: 100%;
+    height: 100%;
+    background-image: radial-gradient(transparent 60%, rgb(28, 84, 200) 60%);
+    z-index: 1;
+}
+
+.piece {
+    border-radius: 50%;
+    flex-grow: 1;
+    margin: 5%;
+}
+
+.piece[data-player="1"] {
+    background-color: rgb(194, 162, 21);
+}
+
+.piece[data-player="2"] {
+    background-color: rgb(180, 37, 10);
+}
+
+.piece[data-placed="false"] {
+    transform: translateY(-15vmin);
+    border: 2px solid white;
+}
+
+#modal-container {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 1;
+    background-color: rgba(0, 0, 0, 0.5);
+    padding-top: 0vh;
+}
+
+#modal-content {
+    border-radius: 1vh;
+    position: relative;
+    width: 80vw;
+    margin: auto;
+    padding: 2.5vmin;
+    background-color: rgb(194, 162, 16);
+    align-items: center;
+    display: flex;
+    flex-direction: column;
+    animation-name: animatetop;
+    animation-duration: 0.3s;
+}
+
+@keyframes animatetop {
+    from {top: -30vmin; opacity: 0;}
+    to {top: 0; opacity: 1}
+}
+
+#modal-heading {
+    font-size: 6vh;
+    margin: 2.5vh;
+    color: white;
+    font-weight: bolder;
+}
+
+#modal-message {
+    font-size: 5.5vmin;
+    margin: 2vmin;
+}
+
+#reset {
+    color: white;
+    font-size: 3vh;
+    margin: 2.5vmin;
+    padding: 2.5vmin;
+    outline: none;
+    border-radius: 1vh;
+    background-color: rgba(20, 23, 163);
+    font-weight: bold;
+}
+
+.piece[data-player="1"][data-highlighted="true"] {
+  background-color: rgb(100, 187, 21);
+}
+
+.piece[data-player="2"][data-highlighted="true"] {
+  background-color: rgb(100, 187, 21);
+}
+
+
+h2, h4 {
+    color: white;
+    margin-top: 2vh;
+}
+
+h4 {
+    color: white;
+    font-size: 3.5vmin;
+}
+
+.link {
+    color: royalblue;
+    text-decoration: underline;
+}
+
+#creator {
+    margin-top: 16vh;
+}
