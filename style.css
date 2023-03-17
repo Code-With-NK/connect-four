@@ -59,6 +59,7 @@ heading2 {
     border-radius: 50%;
     flex-grow: 1;
     margin: 5%;
+    z-index: 1;
 }
 
 .piece[data-player="1"] {
