@@ -1,33 +1,35 @@
 *, *::after, *::before {
     margin: 0;
     padding: 0;
-    font-family: Georgia, 'Times New Roman', Times, serif
+    font-family: Georgia, 'Times New Roman', Times, serif;
 }
 
 html {
     background-color: black;
     background-size: cover;
-    background-repeat: no-repeat;
     width: 100%;
     height: 100%;
 }
 
 body {
     display: flex;
+    width: 100%;
+    height: 100%;
     flex-direction: column;
     align-items: center;
-    margin: 20px auto;
+    justify-content: space-evenly;
+    margin: auto;
 }
 
-heading2 {
+head1 {
     font-size: 6vh;
-    margin: 2.5vh;
+    margin: 3vh;
     color: white;
 }
 
 .holder {
-    padding-top: 30vmin;
-    margin: 20px auto;
+    padding-top: 10%;
+    margin: 2vh auto;
 }
 
 #board {
@@ -37,8 +39,8 @@ heading2 {
     border-radius: 2vh;
     border: 4vmin solid rgb(28, 84, 200);
     background-color: rgb(26, 41, 57);
-    grid-template-columns: repeat(7, 1fr);
-    grid-template-rows: repeat(6, 1fr);
+    grid-template-columns: repeat(var(--rows), 1fr);
+    grid-template-rows: repeat(var(--cols), 1fr);
 }
 
 .cell {
@@ -47,10 +49,10 @@ heading2 {
 }
 
 .cell::before {
-    position: absolute;
     content: '';
     width: 100%;
     height: 100%;
+    position: absolute;
     background-image: radial-gradient(transparent 60%, rgb(28, 84, 200) 60%);
     z-index: 1;
 }
@@ -71,17 +73,17 @@ heading2 {
 }
 
 .piece[data-placed="false"] {
-    transform: translateY(-15vmin);
+    transform: translateY(-16vmin);
     border: 2px solid white;
 }
 
 #modal-container {
     display: none;
     position: fixed;
-    top: 0;
-    left: 0;
     width: 100%;
     height: 100%;
+    top: 0;
+    left: 0;
     z-index: 1;
     background-color: rgba(0, 0, 0, 0.5);
     padding-top: 0vh;
@@ -101,31 +103,31 @@ heading2 {
     animation-duration: 0.3s;
 }
 
-@keyframes animatetop {
-    from {top: -30vmin; opacity: 0;}
-    to {top: 0; opacity: 1}
-}
-
 #modal-heading {
-    font-size: 6vh;
+    font-size: 5vh;
     margin: 2.5vh;
     color: white;
     font-weight: bolder;
 }
 
 #modal-message {
-    font-size: 5.5vmin;
+    font-size: 3vh;
     margin: 2vmin;
+}
+
+@keyframes animatetop {
+    from {top: -30vmin; opacity: 0;}
+    to {top: 0; opacity: 1}
 }
 
 #reset {
     color: white;
-    font-size: 3vh;
+    font-size: 2vh;
     margin: 2.5vmin;
     padding: 2.5vmin;
     outline: none;
     border-radius: 1vh;
-    background-color: rgba(20, 23, 163);
+    background-color: rgb(20, 23, 63);
     font-weight: bold;
 }
 
@@ -137,14 +139,16 @@ heading2 {
   background-color: rgb(100, 187, 21);
 }
 
-
-h2, h4 {
+head2, head3, head4 {
     color: white;
-    margin-top: 2vh;
 }
 
-h4 {
-    color: white;
+head2 {
+    margin-top: 2vh;
+    font-size: 5vmin;
+}
+
+head3, head4 {
     font-size: 3.5vmin;
 }
 
@@ -154,5 +158,5 @@ h4 {
 }
 
 #creator {
-    margin-top: 16vh;
+    bottom: 0;
 }

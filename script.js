@@ -4,7 +4,15 @@ const modalHeading = document.querySelector('#modal-heading')
 const modalMessage = document.querySelector('#modal-message')
 const modalButton = document.querySelector('#reset')
 const linkText = document.querySelector('.link')
-const ytLink = document.getElementById('yt')
+const ytLink = document.querySelector('#yt')
+
+var rows = 7
+var cols = 6
+
+const root = document.querySelector(':root')
+
+root.style.setProperty('--rows', rows)
+root.style.setProperty('--cols', cols)
 
 modalButton.onclick = () => {
     location.reload()
@@ -21,65 +29,74 @@ ytLink.addEventListener('click', () => {
 const RED_TURN = 1
 const YELLOW_TURN = 2
 
-const pieces = [
-    0, 0, 0, 0, 0, 0, 0,
-    0, 0, 0, 0, 0, 0, 0,
-    0, 0, 0, 0, 0, 0, 0,
-    0, 0, 0, 0, 0, 0, 0,
-    0, 0, 0, 0, 0, 0, 0,
-    0, 0, 0, 0, 0, 0, 0,
-]
+const pieces = []
+for(let i = 0; i < (rows * cols); i++){
+    pieces.push(0)
+}
 
 let playerTurn = RED_TURN
 let hoverColumn = -1
 let animating = false
 
-for (let i = 0; i < 42; i++) {
+for (let i = 0; i < (rows * cols); i++) {
     let cell = document.createElement('div')
     cell.className = 'cell'
     board.appendChild(cell)
     
-    cell.ontouchstart = () => {
-        onFingerEnteredColumn(i % 7)
-    }
+    manageListeners(i, cell)
+}
+
+function manageListeners(i, cell){
+    cell.addEventListener('touchstart', () => {
+        onFingerEnteredColumn(i % rows)
+    })
     
-    cell.onclick = () => {
-        if(!animating){
-            onColumnClicked(i % 7)
+    cell.addEventListener('click', () => {
+        if (!animating) {
+            onColumnClicked(i % rows)
         }
-    }
+    })
 }
 
 function onColumnClicked(column){
-    let availableRow = pieces.filter((_, index) => index % 7 === column).lastIndexOf(0)
+    let availableRow = pieces.filter((_, index) => index % rows === column).lastIndexOf(0)
     if(availableRow === -1){
         return
     }
     
-    pieces[(availableRow * 7) + column] = playerTurn
-    let cell = board.children[(availableRow * 7) + column]
+    pieces[(availableRow * rows) + column] = playerTurn
+    let cell = board.children[(availableRow * rows) + column]
     
-    let piece = document.createElement('div')
-    piece.className = 'piece'
-    piece.dataset.placed = true
-    piece.dataset.player = playerTurn
+    let unplacedPiece = document.querySelector("[data-placed='false']")
+    let piece = createPiece()
     cell.appendChild(piece)
     
-    let unplaceedPiece = document.querySelector("[data-placed='false']")
-    let unplacedY = unplaceedPiece.getBoundingClientRect().y
+    let unplacedY = unplacedPiece.getBoundingClientRect().y
     let placedY = piece.getBoundingClientRect().y
     
     let yDiff = unplacedY - placedY
     
     animating = true
     removeUnplacedPiece()
+    animatePiece(piece, yDiff)
+}
+
+function createPiece(){
+    let piece = document.createElement('div')
+    piece.className = 'piece'
+    piece.dataset.placed = true
+    piece.dataset.player = playerTurn
+    return piece
+}
+
+function animatePiece(piece, y){
     let animate = piece.animate(
-        [
-            { transform: `translateY(${yDiff}px)`, offset: 0},
-            { transform: `translateY(0px)`, offset: 0.6},
-            { transform: `translateY(${yDiff / 20}px)`, offset: 0.8},
-            { transform: `translateY(0px)`, offset: 1},
-        ],
+            [
+                { transform: `translateY(${y}px)`, offset: 0 },
+                { transform: `translateY(0px)`, offset: 0.5 },
+                { transform: `translateY(${y / 10}px)`, offset: 0.73 },
+                { transform: `translateY(0px)`, offset: 1 }
+            ],
         {
             duration: 600,
             easing: "linear",
@@ -87,24 +104,22 @@ function onColumnClicked(column){
         }
     )
     
-    animate.addEventListener('finish', checkWinGameOrDraw)
+    animate.addEventListener('finish', () => {
+        animating = false
+        checkWinGameOrDraw()
+    })
 }
 
 function checkWinGameOrDraw(){
-    animating = false
-    
-    if(!pieces.includes(0)){
-        modalContainer.style.display = 'flex'
-        modalHeading.textContent = 'Game Draw'
-        modalMessage.textContent = 'Game Has been Drawn. Play Again'
-        modalButton.textContent = 'Play Again'
+    if(hasGameDrawn(pieces)){
+        message = 'Game Drawn'
+        showModal('Game Draw', message, 'Play Again')
     }
     
     if(hasPlayerWon(playerTurn, pieces)){
-        modalContainer.style.display = 'flex'
-        modalHeading.textContent = playerTurn == RED_TURN ? 'Game Lost' : 'Game Won'
-        modalMessage.textContent = `${playerTurn == YELLOW_TURN ? 'Red' : 'Yellow'} player has won`
-        modalButton.textContent = 'Play Again'
+        heading = playerTurn == RED_TURN ? 'Game Lost' : 'Game Won'
+        message = `${playerTurn == YELLOW_TURN ? 'Red' : 'Yellow'} player has won`
+        showModal(heading, message, 'Play Again')
     }
     
     if (playerTurn === RED_TURN) {
@@ -116,9 +131,21 @@ function checkWinGameOrDraw(){
     updateHover()
 }
 
+function showModal(heading, message, buttonText){
+    modalContainer.style.display = 'flex'
+    modalHeading.textContent = heading
+    modalMessage.textContent = message
+    modalButton.textContent = buttonText
+    return
+}
+
+function hasGameDrawn(pieces){
+    return !pieces.includes(0)
+}
+
 function hasPlayerWon(playerTurn, pieces){
-    for (let index = 0; index < 42; index++) {
-        if(index % 7 < 4){
+    for (let index = 0; index < (rows * cols); index++) {
+        if(index % rows < (rows - 3)){
             if(
                 pieces[index] === playerTurn &&
                 pieces[index + 1] === playerTurn &&
@@ -133,47 +160,47 @@ function hasPlayerWon(playerTurn, pieces){
             }
         }
         
-        if (index < 21) {
+        if (index < (rows * (cols - 3))) {
             if (
                 pieces[index] === playerTurn &&
-                pieces[index + 7] === playerTurn &&
-                pieces[index + 14] === playerTurn &&
-                pieces[index + 21] === playerTurn
+                pieces[index + rows] === playerTurn &&
+                pieces[index + (rows * 2)] === playerTurn &&
+                pieces[index + (rows * 3)] === playerTurn
             ) {
                 board.children[index].firstChild.dataset.highlighted = true
-                board.children[index + 7].firstChild.dataset.highlighted = true
-                board.children[index + 14].firstChild.dataset.highlighted = true
-                board.children[index + 21].firstChild.dataset.highlighted = true
+                board.children[index + rows].firstChild.dataset.highlighted = true
+                board.children[index + (rows * 2)].firstChild.dataset.highlighted = true
+                board.children[index + (rows * 3)].firstChild.dataset.highlighted = true
                 return true
             }
         }
         
-        if (index % 7 < 4 && index < 18) {
+        if (index % rows < (rows - 3) && index < (rows * (cols - 3))) {
             if (
                 pieces[index] === playerTurn &&
-                pieces[index + 8] === playerTurn &&
-                pieces[index + 16] === playerTurn &&
-                pieces[index + 24] === playerTurn
+                pieces[index + (rows + 1)] === playerTurn &&
+                pieces[index + ((rows + 1) * 2)] === playerTurn &&
+                pieces[index + ((rows + 1) * 3)] === playerTurn
             ) {
                 board.children[index].firstChild.dataset.highlighted = true
-                board.children[index + 8].firstChild.dataset.highlighted = true
-                board.children[index + 16].firstChild.dataset.highlighted = true
-                board.children[index + 24].firstChild.dataset.highlighted = true
+                board.children[index + (rows + 1)].firstChild.dataset.highlighted = true
+                board.children[index + ((rows + 1) * 2)].firstChild.dataset.highlighted = true
+                board.children[index + ((rows + 1) * 3)].firstChild.dataset.highlighted = true
                 return true
             }
         }
         
-        if (index % 7 >= 3 && index < 21) {
+        if (index % rows >= (cols - 3) && index < (rows * (cols - 3))) {
             if (
                 pieces[index] === playerTurn &&
-                pieces[index + 6] === playerTurn &&
-                pieces[index + 12] === playerTurn &&
-                pieces[index + 18] === playerTurn
+                pieces[index + (rows - 1)] === playerTurn &&
+                pieces[index + ((rows - 1) * 2)] === playerTurn &&
+                pieces[index + ((rows - 1) * 3)] === playerTurn
             ) {
                 board.children[index].firstChild.dataset.highlighted = true
-                board.children[index + 6].firstChild.dataset.highlighted = true
-                board.children[index + 12].firstChild.dataset.highlighted = true
-                board.children[index + 18].firstChild.dataset.highlighted = true
+                board.children[index + (rows - 1)].firstChild.dataset.highlighted = true
+                board.children[index + ((rows - 1) * 2)].firstChild.dataset.highlighted = true
+                board.children[index + ((rows - 1) * 3)].firstChild.dataset.highlighted = true
                 return true
             }
         }
